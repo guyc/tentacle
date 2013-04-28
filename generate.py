@@ -59,7 +59,6 @@ def arc2d(angle, scale):
     arc.append([-cx-BulgeRadius * math.cos(a),
                 cy+BulgeRadius * math.sin(a)])
 
-  #arc.reverse()
   return arc
 
 def face2d(angle, scale):
@@ -155,8 +154,8 @@ def polyhedronFromMesh(mesh):
             v2 = segment[1] + offset1
 
             # order of segments matches order of triangles which is anticlockwise so we reverse it.
-            polyhedron.triangles.append([v2,v1,v0])
-            polyhedron.triangles.append([v1,v2,v3])
+            polyhedron.triangles.append([v0,v1,v2])
+            polyhedron.triangles.append([v3,v2,v1])
 
     offset = ArcPoints * m
     # front and back face triangles
@@ -170,7 +169,9 @@ def polyhedronFromMesh(mesh):
 
 
 arc = arc2d(0,0) + face2d(0,0)
+arc.reverse()
 tunnel = tunnel2d(0,0)
+#tunnel.reverse()
 
 qp = QuakePolygon()
 
@@ -189,4 +190,12 @@ tri = QuakeTriangle()
 mesh = tri.polyToMesh(qp, "x")
 polyhedron = polyhedronFromMesh(mesh)
 scadFile = open("generated.scad", "w")
+fields = ['ArcAngle',
+          'ArcRadius']
+for field in fields:
+    scadFile.write("%s = %s;\n" % (field,globals()[field]))
+scadFile.write("\nmodule object() {\n");
 polyhedron.write(scadFile)
+scadFile.write("\n}\n");
+scadFile.write("object();\n");
+scadFile.close();
