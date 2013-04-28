@@ -136,24 +136,29 @@ def projectPoint(point2d, angle):
 
 def polyhedronFromMesh(mesh):
     polyhedron = OpenscadPolyhedron()
+    m = len(mesh.vertices)
+
     for step in range(0,ArcPoints+1):
         a = math.pi / 180.0 * ArcAngle * step / ArcPoints
         for vertex in mesh.vertices:
             polyhedron.points.append(projectPoint(vertex,a))
 
     # trangles for edge faces
-    m = len(mesh.vertices)
-    for segment in mesh.segments:
-        v1 = segment[0]
-        v0 = segment[1]
-        v3 = segment[0] + m
-        v2 = segment[1] + m
 
-        # order of segments matches order of triangles which is anticlockwise so we reverse it.
-        polyhedron.triangles.append([v2,v1,v0])
-        polyhedron.triangles.append([v1,v2,v3])
+    for step in range(0,ArcPoints):
+        offset0 = m * step
+        offset1 = m * (step+1)
+        for segment in mesh.segments:
+            v1 = segment[0] + offset0
+            v0 = segment[1] + offset0
+            v3 = segment[0] + offset1
+            v2 = segment[1] + offset1
 
-    offset = ArcPoints * len(mesh.vertices)
+            # order of segments matches order of triangles which is anticlockwise so we reverse it.
+            polyhedron.triangles.append([v2,v1,v0])
+            polyhedron.triangles.append([v1,v2,v3])
+
+    offset = ArcPoints * m
     # front and back face triangles
     for triangle in mesh.triangles:
         # reverse the direction
