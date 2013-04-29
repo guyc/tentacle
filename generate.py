@@ -1,14 +1,18 @@
 #!/usr/bin/env python
 
+# outer perimeter  points must be added clockwise.
+# interior hole points must be added counter-clockwise.
+# Mesh triangles will be returned counter-clockwise and must be reversed.
+
 import math
 from openscad import *
 from quake import *
 
 print "hello world\n"
 
-ArcPoints = 16
 ArcAngle = 10 # degrees
 ArcRadius = 300
+ArcPoints = 16
 
 ArmWidth = 40
 ArmDepth = 20
@@ -49,7 +53,7 @@ def arc2d(angle, scale):
   arc = []
   a0 = angleac
 
-  for i in xrange(0,BulgePoints+1,1):
+  for i in xrange(0,BulgePoints,1):
     a = a0 + sweep * i / BulgePoints
     arc.append([cx+BulgeRadius * math.cos(a),
                 cy+BulgeRadius * math.sin(a)])
@@ -59,6 +63,7 @@ def arc2d(angle, scale):
     arc.append([-cx-BulgeRadius * math.cos(a),
                 cy+BulgeRadius * math.sin(a)])
 
+  arc.reverse
   return arc
 
 def face2d(angle, scale):
@@ -110,10 +115,13 @@ def face2d(angle, scale):
   y = 0
   face.append([x,y])
 
+  face.reverse
   return face
 
+# counter clockwise, because it's a hole
 def tunnel2d(angle, scale):
   tunnel = []
+
   for i in xrange(0,TunnelPoints):
     a = math.pi * 2.0 / TunnelPoints * i
     tunnel.append([+TunnelX + TunnelRadius * math.cos(a),
@@ -135,6 +143,7 @@ def projectPoint(point2d, angle):
 
 def polyhedronFromMesh(mesh):
     polyhedron = OpenscadPolyhedron()
+    polyhedron.convexity = 10
     m = len(mesh.vertices)
 
     for step in range(0,ArcPoints+1):
@@ -143,35 +152,31 @@ def polyhedronFromMesh(mesh):
             polyhedron.points.append(projectPoint(vertex,a))
 
     # trangles for edge faces
-
     for step in range(0,ArcPoints):
         offset0 = m * step
         offset1 = m * (step+1)
         for segment in mesh.segments:
-            v1 = segment[0] + offset0
-            v0 = segment[1] + offset0
-            v3 = segment[0] + offset1
-            v2 = segment[1] + offset1
+            v0 = segment[0] + offset0
+            v1 = segment[1] + offset0
+            v2 = segment[0] + offset1
+            v3 = segment[1] + offset1
 
             # order of segments matches order of triangles which is anticlockwise so we reverse it.
-            polyhedron.triangles.append([v0,v1,v2])
-            polyhedron.triangles.append([v3,v2,v1])
+            polyhedron.triangles.append([v3,v1,v0])
+            polyhedron.triangles.append([v0,v2,v3])
 
     offset = ArcPoints * m
     # front and back face triangles
     for triangle in mesh.triangles:
         # reverse the direction
-        polyhedron.triangles.append([triangle[2],triangle[1],triangle[0]])
-        polyhedron.triangles.append([triangle[0]+offset, triangle[1]+offset, triangle[2]+offset])
-        pass
+        polyhedron.triangles.append([triangle[0],triangle[1],triangle[2]])
+        polyhedron.triangles.append([triangle[2]+offset, triangle[1]+offset, triangle[0]+offset])
     
     return polyhedron
 
 
-arc = arc2d(0,0) + face2d(0,0)
-arc.reverse()
+arc = face2d(0,0) + arc2d(0,0)
 tunnel = tunnel2d(0,0)
-#tunnel.reverse()
 
 qp = QuakePolygon()
 
@@ -184,7 +189,8 @@ for curve in [arc, tunnel]:
   for i in range(0,n):
       qp.segments.append([v0+i,v0+((i+1)%n)])
 
-qp.holes.append([TunnelX, TunnelY])
+if len(tunnel):
+    qp.holes.append([TunnelX, TunnelY])
 
 tri = QuakeTriangle()
 mesh = tri.polyToMesh(qp, "x")

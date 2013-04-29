@@ -1,8 +1,8 @@
 use <generated.scad>
 
 small = 0.1;
-ConnectorX = 7;
-ConnectorY = 10;
+ConnectorX = 6;
+ConnectorY = 9;
 ConnectorDX = 3;
 ConnectorDY = 3;
 ConnectorDZ = 3;

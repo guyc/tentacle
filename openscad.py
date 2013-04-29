@@ -4,13 +4,15 @@ class OpenscadPolyhedron:
     def __init__(self):    
         self.points = []
         self.triangles = []
-
+        self.convexity = None
 
     def write(self, file=None):
         if file == None:
             file = sys.stdout
             
         file.write("polyhedron (\n")
+        if self.convexity != None:
+            file.write("  convexity = {0},\n".format(self.convexity))
         file.write("  points = [ // {0} points\n".format(len(self.points)))
         n = 0
         for point in self.points:
