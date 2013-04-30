@@ -10,8 +10,8 @@ from quake import *
 
 print "hello world\n"
 
-ArcAngle = 10 # degrees
-ArcRadius = 300
+ArcAngle = 15 # degrees
+ArcRadius = 450
 ArcPoints = 16
 
 ArmWidth = 40
@@ -203,5 +203,5 @@ for field in fields:
 scadFile.write("\nmodule object() {\n");
 polyhedron.write(scadFile)
 scadFile.write("\n}\n");
-scadFile.write("object();\n");
+#scadFile.write("object();\n");
 scadFile.close();

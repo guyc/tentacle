@@ -1,31 +1,54 @@
-use <generated.scad>
+include <generated.scad>
 
 small = 0.1;
-ConnectorX = 6;
-ConnectorY = 9;
-ConnectorDX = 3;
-ConnectorDY = 3;
-ConnectorDZ = 3;
+AlignHoleX = 6;
+AlignHoleY = 9;
+AlignHoleDX = 3;
+AlignHoleDY = 3;
+AlignHoleDZ = 2;
 
-module ConnectorPositive()
+AlignPegX = AlignHoleX;
+AlignPegY = AlignHoleY;
+AlignPegDX = AlignHoleDX - 0.5;
+AlignPegDY = AlignHoleDY - 0.5;
+AlignPegDZ = AlignHoleDZ - 0.5;
+
+module AlignPeg()
 {
-  cube();        
+    translate([0,-ArcRadius,0]) {
+      rotate(a=[ArcAngle,0,0]) {
+        translate([0,ArcRadius,0]) {
+
+  translate([AlignPegX, AlignPegY, AlignPegDZ/2]) 
+  {
+    cube(size=[AlignPegDX,AlignPegDY,AlignPegDZ], center=true);
+  }
+  translate([-AlignPegX, AlignPegY, AlignPegDZ/2]) 
+  {
+    cube(size=[AlignPegDX,AlignPegDY,AlignPegDZ], center=true);
+  }
+  
+  }
+}
+}
 }
 
-module ConnectorNegative()
+module AlignHoleNegative()
 {
-  translate([ConnectorX, ConnectorY, ConnectorDZ/2-small]) 
+  translate([AlignHoleX, AlignHoleY, AlignHoleDZ/2-small]) 
   {
-    cube(size=[ConnectorDX,ConnectorDY,ConnectorDZ+small*2], center=true);
+    cube(size=[AlignHoleDX,AlignHoleDY,AlignHoleDZ+small], center=true);
   }
-  translate([-ConnectorX, ConnectorY, ConnectorDZ/2-small]) 
+  translate([-AlignHoleX, AlignHoleY, AlignHoleDZ/2-small]) 
   {
-    cube(size=[ConnectorDX,ConnectorDY,ConnectorDZ+small*2], center=true);
+    cube(size=[AlignHoleDX,AlignHoleDY,AlignHoleDZ+small], center=true);
   }
 }
 
 difference()
 {
   object();
-  ConnectorNegative();
+  AlignHoleNegative();
 }
+AlignPeg();
+
