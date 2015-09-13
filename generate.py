@@ -10,7 +10,7 @@ from quake import *
 
 print "hello world\n"
 
-ArcAngle = 10 # degrees
+ArcAngle = 60.0/8.0 # degrees
 ArcRadius = 895
 ArcPoints = 16
 
