@@ -9,7 +9,7 @@ from sets import Set
 class QuakeTriangle:
     def __init__(self):
         self.quality = True
-        self.triangle = "/Users/guy/src/triangle/triangle"
+        self.triangle = "/Users/guycarpenter/triangle/triangle"
 
     def polyToMesh(self,poly,suffix=''):
         base = "/tmp/triangle" # REVISIT - use tmpnam
@@ -72,8 +72,7 @@ class QuakeGeom:
                     elif segment[1] == segments[i][1]:
                         #print "found misordered pair at {0}".format(i)
                         segment = segments.pop(i)
-                        segment[0],segment[1] = segment[1],segment[0]
-                        ordered.append(segment)
+                        ordered.append([segment[1],segment[0]])
                         done = False
                         break
         return ordered    

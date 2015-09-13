@@ -1,11 +1,11 @@
 include <generated.scad>
 
 small = 0.1;
-AlignHoleX = 6;
-AlignHoleY = 9;
+AlignHoleX = 12;
+AlignHoleY = 16;
 AlignHoleDX = 3;
 AlignHoleDY = 3;
-AlignHoleDZ = 2;
+AlignHoleDZ = 4;
 
 AlignPegX = AlignHoleX;
 AlignPegY = AlignHoleY;

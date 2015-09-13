@@ -10,18 +10,18 @@ from quake import *
 
 print "hello world\n"
 
-ArcAngle = 15 # degrees
-ArcRadius = 450
+ArcAngle = 10 # degrees
+ArcRadius = 895
 ArcPoints = 16
 
 ArmWidth = 40
-ArmDepth = 20
-BulgeRadius  = 60
+ArmDepth = 30
+BulgeRadius  = 30
 BulgePoints  = 16
 
 TunnelX = 0
-TunnelY = 12
-TunnelRadius = 3
+TunnelY = 22
+TunnelRadius = 4
 TunnelPoints = 16
 
 TrackWidth = 14.5
@@ -30,16 +30,16 @@ TrackOverhang = 1.0
 TrackOverhangDepth = 1.0
 
 DiffuserDepth = 1.0
-DiffuserWidth = 25
-DiffuserOverhang = 2.0
+DiffuserWidth = 32.0
+DiffuserOverhang = 5.0
 DiffuserOverhangDepth = 1.0
-DiffuserBackDepth = 1.2
+DiffuserBackDepth = 11.2
 
 def arc2d(angle, scale):
   # clockwise outer boundary
-  ax = ArmWidth/2
-  ay = 0
-  bx = 0
+  ax = ArmWidth/2.0
+  ay = 0.0
+  bx = 0.0
   by = ArmDepth
   dab = math.sqrt(ax*ax+by*by)
   angleab = math.atan(by/ax)
